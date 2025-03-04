@@ -1,22 +1,19 @@
 package com.ilan.config;
 
-import com.ilan.batch.SampleItemProcessor;
-import com.ilan.batch.SampleItemReader;
-import com.ilan.batch.SampleItemWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 import static com.ilan.constants.JobConstants.FILE_NAME;
@@ -89,18 +87,54 @@ public class BatchConfig {
 
     @Bean
     public Job asyncJob(JobRepository jobRepository, Step asyncStep) {
-        return new JobBuilder("asyncJob", jobRepository)
+        UUID uuid = UUID.randomUUID();
+        return new JobBuilder("asyncJob_"+uuid, jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(asyncStep)
                 .build();
     }
 
     @Bean
-    CommandLineRunner startJob(JobLauncher jobLauncher, Job asyncJob){
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString(FILE_NAME_PARAM, FILE_NAME)
-                .toJobParameters();
-        return args -> jobLauncher.run(asyncJob, jobParameters);
+    public TaskExecutor jobTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);  // Number of concurrent threads
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(100);
+        executor.initialize();
+        return executor;
     }
+
+
+    @Bean(name = "customJobLauncher")
+    public JobLauncher jobLauncher(JobRepository jobRepository) {
+        TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
+        jobLauncher.setTaskExecutor(jobTaskExecutor());
+        jobLauncher.setJobRepository(jobRepository);
+        return jobLauncher;
+    }
+
+    @Bean
+    CommandLineRunner startJob(@Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob, JobRepository jobRepository, Step asyncStep) {
+        return args -> {
+            for (int i = 0; i < 5; i++) {
+                jobTaskExecutor().execute(() -> {
+                    try {
+                        UUID uuid = UUID.randomUUID();
+                        Job job = new JobBuilder("asyncJob_"+uuid, jobRepository)
+                                .incrementer(new RunIdIncrementer())
+                                .start(asyncStep)
+                                .build();
+                        JobParameters jobParameters = new JobParametersBuilder()
+                                .addString(FILE_NAME_PARAM, FILE_NAME)
+                                .toJobParameters();
+                        jobLauncher.run(job, jobParameters);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        };
+    }
+
 
 }
