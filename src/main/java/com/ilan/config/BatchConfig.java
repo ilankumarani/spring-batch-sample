@@ -1,5 +1,7 @@
 package com.ilan.config;
 
+import com.ilan.batch.listener.SampleJobListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -31,7 +33,11 @@ import static com.ilan.constants.JobConstants.FILE_NAME;
 import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
 
 @Configuration
+@RequiredArgsConstructor
 public class BatchConfig {
+
+    public static final int CHUNK_SIZE = 10;
+    private final SampleJobListener sampleJobListener;
 
     @Bean
     public TaskExecutor taskExecutor() {
@@ -77,7 +83,8 @@ public class BatchConfig {
                           AsyncItemProcessor<String, String> asyncProcessor,
                           AsyncItemWriter<String> asyncWriter) {
         return new StepBuilder("asyncStep", jobRepository)
-                .<String, Future<String>>chunk(10, transactionManager)
+                .<String, Future<String>>chunk(CHUNK_SIZE, transactionManager)
+                .listener(sampleJobListener)
                 .reader(sampleItemReader)
                 .processor(asyncProcessor)
                 .writer(asyncWriter)
@@ -91,6 +98,7 @@ public class BatchConfig {
         return new JobBuilder("asyncJob_"+uuid, jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(asyncStep)
+                .listener(sampleJobListener)
                 .build();
     }
 

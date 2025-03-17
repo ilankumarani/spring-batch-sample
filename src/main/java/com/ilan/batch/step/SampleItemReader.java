@@ -1,4 +1,4 @@
-package com.ilan.batch;
+package com.ilan.batch.step;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,12 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
 
 @Component
@@ -26,6 +32,9 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
     private Boolean firstExecution = Boolean.FALSE;
     private Boolean initialized = Boolean.TRUE;
 
+    private List<String> items;
+    private Iterator<String> iterator;
+
     /**
      * called only once before the Step
      */
@@ -34,7 +43,8 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
         JobParameters jobParameters = stepExecution.getJobParameters();
         fileName = jobParameters.getString(FILE_NAME_PARAM);
         log.info("File name from StepExecution {}", fileName);
-        initialized();
+        items = initialized();
+        this.iterator = items.iterator();
     }
 
     @Override
@@ -45,19 +55,17 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
 
     @Override
     public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        if(!firstExecution){
-            firstExecution = Boolean.TRUE;
-            oneTimeLoadRead();
-            return "Test String";
-        }
-        return null;
+        return iterator.hasNext() ? iterator.next() : null;
     }
 
     private void oneTimeLoadRead(){
         log.info("Reading the file once inside Read method of ItemReader");
     }
 
-    private void initialized(){
+    private List<String> initialized(){
         log.info("Reading the file once inside BeforeStep method");
+        char[] UpperCaseAlphabet = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+        return Arrays.stream(new String(UpperCaseAlphabet).split(""))
+                .collect(Collectors.toList());
     }
 }
