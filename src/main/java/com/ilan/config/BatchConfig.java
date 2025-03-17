@@ -84,7 +84,6 @@ public class BatchConfig {
                           AsyncItemWriter<String> asyncWriter) {
         return new StepBuilder("asyncStep", jobRepository)
                 .<String, Future<String>>chunk(CHUNK_SIZE, transactionManager)
-                .listener(sampleJobListener)
                 .reader(sampleItemReader)
                 .processor(asyncProcessor)
                 .writer(asyncWriter)
@@ -95,10 +94,10 @@ public class BatchConfig {
     @Bean
     public Job asyncJob(JobRepository jobRepository, Step asyncStep) {
         UUID uuid = UUID.randomUUID();
-        return new JobBuilder("asyncJob_"+uuid, jobRepository)
+        return new JobBuilder("asyncJob_" + uuid, jobRepository)
+                .listener(sampleJobListener)
                 .incrementer(new RunIdIncrementer())
                 .start(asyncStep)
-                .listener(sampleJobListener)
                 .build();
     }
 
@@ -128,12 +127,12 @@ public class BatchConfig {
                 jobTaskExecutor().execute(() -> {
                     try {
                         UUID uuid = UUID.randomUUID();
-                        Job job = new JobBuilder("asyncJob_"+uuid, jobRepository)
+                        Job job = new JobBuilder("asyncJob_" + uuid, jobRepository)
                                 .incrementer(new RunIdIncrementer())
                                 .start(asyncStep)
                                 .build();
                         JobParameters jobParameters = new JobParametersBuilder()
-                                .addString(FILE_NAME_PARAM, FILE_NAME)
+                                .addString(FILE_NAME_PARAM, uuid + FILE_NAME)
                                 .toJobParameters();
                         jobLauncher.run(job, jobParameters);
                     } catch (Exception e) {

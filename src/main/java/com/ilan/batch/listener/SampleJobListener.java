@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SampleJobListener implements JobExecutionListener {
 
-//    @Override
-//    public void beforeJob(JobExecution jobExecution) {
-//        log.info("Job Started: {}" , jobExecution.getJobInstance().getJobName());
-//    }
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        log.info("Job Started: {}" , jobExecution.getJobInstance().getJobName());
+    }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
