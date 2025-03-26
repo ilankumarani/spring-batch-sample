@@ -23,6 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @EnableBatchProcessing(dataSourceRef = "dataSource",
         transactionManagerRef = "transactionManager",
+        tablePrefix = "SPRING_BATCH.BATCH_",
         isolationLevelForCreate = "ISOLATION_READ_COMMITTED",
         taskExecutorRef = "customJobTaskExecutor")
 @Configuration
