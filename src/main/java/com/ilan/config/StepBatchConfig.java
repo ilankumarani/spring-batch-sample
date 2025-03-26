@@ -93,7 +93,7 @@ public class StepBatchConfig {
     }
 
     @Bean
-    CommandLineRunner startJob(@Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob, JobRepository jobRepository, Step asyncStep) {
+    CommandLineRunner startJob(@Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob) {
         return args -> {
            /* for (int i = 0; i < 5; i++) {
                 jobTaskExecutor().execute(() -> {
