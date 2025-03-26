@@ -1,6 +1,6 @@
 package com.ilan.config;
 
-import com.ilan.batch.listener.SampleJobListener;
+import com.ilan.batch.listener.SampleJobExecutionListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -37,22 +37,7 @@ import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
 public class BatchConfig {
 
     public static final int CHUNK_SIZE = 10;
-    private final SampleJobListener sampleJobListener;
-
-    @Bean
-    public TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(4);
-        executor.setMaxPoolSize(8);
-        executor.setQueueCapacity(10);
-        executor.initialize();
-        return executor;
-    }
-
-    @Bean
-    public TaskExecutor customTaskExecutor() {
-        return new SimpleAsyncTaskExecutor("Spring-Batch");
-    }
+    private final SampleJobExecutionListener sampleJobExecutionListener;
 
 
     /*@StepScope
@@ -95,7 +80,7 @@ public class BatchConfig {
     public Job asyncJob(JobRepository jobRepository, Step asyncStep) {
         UUID uuid = UUID.randomUUID();
         return new JobBuilder("asyncJob_" + uuid, jobRepository)
-                .listener(sampleJobListener)
+                .listener(new SampleJobExecutionListener())
                 .incrementer(new RunIdIncrementer())
                 .start(asyncStep)
                 .build();
@@ -111,21 +96,12 @@ public class BatchConfig {
         return executor;
     }
 
-
-    @Bean(name = "customJobLauncher")
-    public JobLauncher jobLauncher(JobRepository jobRepository) {
-        TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
-        jobLauncher.setTaskExecutor(jobTaskExecutor());
-        jobLauncher.setJobRepository(jobRepository);
-        return jobLauncher;
-    }
-
     @Bean
     CommandLineRunner startJob(@Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob, JobRepository jobRepository, Step asyncStep) {
         return args -> {
-            for (int i = 0; i < 5; i++) {
+           /* for (int i = 0; i < 5; i++) {
                 jobTaskExecutor().execute(() -> {
-                    try {
+                    try {*/
                         UUID uuid = UUID.randomUUID();
                         Job job = new JobBuilder("asyncJob_" + uuid, jobRepository)
                                 .incrementer(new RunIdIncrementer())
@@ -135,11 +111,11 @@ public class BatchConfig {
                                 .addString(FILE_NAME_PARAM, uuid + FILE_NAME)
                                 .toJobParameters();
                         jobLauncher.run(job, jobParameters);
-                    } catch (Exception e) {
+                   /* } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-            }
+            }*/
         };
     }
 
