@@ -23,6 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 
+import javax.sql.DataSource;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
@@ -93,8 +94,9 @@ public class StepBatchConfig {
     }
 
     @Bean
-    CommandLineRunner startJob(@Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob) {
+    CommandLineRunner startJob(DataSource dataSource, @Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob) {
         return args -> {
+            System.out.println(dataSource);
            /* for (int i = 0; i < 5; i++) {
                 jobTaskExecutor().execute(() -> {
                     try {*/
