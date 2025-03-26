@@ -52,7 +52,7 @@ public class DefaultBatchConfig {
     }
 
 
-    @Bean(name = "customJobLauncher")
+    /*@Bean(name = "customJobLauncher")
     @SneakyThrows
     public JobLauncher jobLauncher(JobRepository jobRepository, @Qualifier("customJobTaskExecutor") TaskExecutor jobTaskExecutor) throws BatchConfigurationException {
         TaskExecutorJobLauncher taskExecutorJobLauncher = new TaskExecutorJobLauncher();
@@ -73,5 +73,5 @@ public class DefaultBatchConfig {
         simpleJobOperator.setJobLauncher(jobLauncher);
         simpleJobOperator.afterPropertiesSet();
         return simpleJobOperator;
-    }
+    }*/
 }
