@@ -1,8 +1,12 @@
 package com.ilan.config;
 
 import org.springframework.batch.core.configuration.BatchConfigurationException;
+import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.support.JobOperatorFactoryBean;
 import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,13 +23,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
         isolationLevelForCreate = "ISOLATION_READ_COMMITTED",
         taskExecutorRef = "jobTaskExecutor")
 @Configuration
+//DefaultBatchConfiguration
 public class DefaultBatchConfig {
 
     @Value("${demo.parallelism:#{T(java.lang.Runtime).getRuntime().availableProcessors()}}")
     private Integer corePoolSize;
 
     @Bean(name = "jobTaskExecutor")
-    public TaskExecutor taskExecutor() {
+    public TaskExecutor jobTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);
         executor.setMaxPoolSize(Integer.MAX_VALUE);
@@ -34,10 +39,11 @@ public class DefaultBatchConfig {
         return executor;
     }
 
-    @Bean
-    public TaskExecutor customTaskExecutor() {
-        return new SimpleAsyncTaskExecutor("Spring-Batch");
+    @Bean(name = "stepTaskExecutor")
+    public TaskExecutor stepTaskExecutor() {
+        return new SimpleAsyncTaskExecutor("step-taskExecutor");
     }
+
 
     @Bean(name = "customJobLauncher")
     public JobLauncher jobLauncher(JobRepository jobRepository, @Qualifier("jobTaskExecutor") TaskExecutor jobTaskExecutor) throws BatchConfigurationException {
@@ -51,6 +57,23 @@ public class DefaultBatchConfig {
         } catch (Exception var4) {
             Exception e = var4;
             throw new BatchConfigurationException("Unable to configure the default job launcher", e);
+        }
+    }
+
+    @Bean
+    public JobOperator jobOperator(JobRepository jobRepository, JobExplorer jobExplorer, JobRegistry jobRegistry, @Qualifier("customJobLauncher") JobLauncher jobLauncher) throws BatchConfigurationException {
+        JobOperatorFactoryBean jobOperatorFactoryBean = new JobOperatorFactoryBean();
+        jobOperatorFactoryBean.setJobRepository(jobRepository);
+        jobOperatorFactoryBean.setJobExplorer(jobExplorer);
+        jobOperatorFactoryBean.setJobRegistry(jobRegistry);
+        jobOperatorFactoryBean.setJobLauncher(jobLauncher);
+
+        try {
+            jobOperatorFactoryBean.afterPropertiesSet();
+            return jobOperatorFactoryBean.getObject();
+        } catch (Exception var7) {
+            Exception e = var7;
+            throw new BatchConfigurationException("Unable to configure the default job operator", e);
         }
     }
 }

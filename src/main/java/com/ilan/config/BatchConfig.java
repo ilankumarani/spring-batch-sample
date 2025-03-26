@@ -47,10 +47,10 @@ public class BatchConfig {
     }*/
 
     @Bean
-    public AsyncItemProcessor<String, String> asyncProcessor(ItemProcessor<String, String> sampleItemProcessor) {
+    public AsyncItemProcessor<String, String> asyncProcessor(ItemProcessor<String, String> sampleItemProcessor, @Qualifier("stepTaskExecutor") TaskExecutor stepTaskExecutor) {
         AsyncItemProcessor<String, String> asyncItemProcessor = new AsyncItemProcessor<>();
         asyncItemProcessor.setDelegate(sampleItemProcessor);
-        asyncItemProcessor.setTaskExecutor(customTaskExecutor());
+        asyncItemProcessor.setTaskExecutor(stepTaskExecutor);
         return asyncItemProcessor;
     }
 
@@ -66,13 +66,14 @@ public class BatchConfig {
                           PlatformTransactionManager transactionManager,
                           ItemReader<String> sampleItemReader,
                           AsyncItemProcessor<String, String> asyncProcessor,
-                          AsyncItemWriter<String> asyncWriter) {
+                          AsyncItemWriter<String> asyncWriter,
+                          @Qualifier("stepTaskExecutor") TaskExecutor stepTaskExecutor) {
         return new StepBuilder("asyncStep", jobRepository)
                 .<String, Future<String>>chunk(CHUNK_SIZE, transactionManager)
                 .reader(sampleItemReader)
                 .processor(asyncProcessor)
                 .writer(asyncWriter)
-                .taskExecutor(taskExecutor())  // Enable multi-threading
+                .taskExecutor(stepTaskExecutor)  // Enable multi-threading
                 .build();
     }
 
