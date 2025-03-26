@@ -49,18 +49,13 @@ public class DefaultBatchConfig {
 
 
     @Bean(name = "customJobLauncher")
+    @SneakyThrows
     public JobLauncher jobLauncher(JobRepository jobRepository, @Qualifier("customJobTaskExecutor") TaskExecutor jobTaskExecutor) throws BatchConfigurationException {
         TaskExecutorJobLauncher taskExecutorJobLauncher = new TaskExecutorJobLauncher();
         taskExecutorJobLauncher.setJobRepository(jobRepository);
         taskExecutorJobLauncher.setTaskExecutor(jobTaskExecutor);
-
-        try {
-            taskExecutorJobLauncher.afterPropertiesSet();
-            return taskExecutorJobLauncher;
-        } catch (Exception var4) {
-            Exception e = var4;
-            throw new BatchConfigurationException("Unable to configure the default job launcher", e);
-        }
+        taskExecutorJobLauncher.afterPropertiesSet();
+        return taskExecutorJobLauncher;
     }
 
     @Primary
