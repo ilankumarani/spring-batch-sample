@@ -21,7 +21,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 
-@EnableBatchProcessing(dataSourceRef = "dataSource",
+@EnableBatchProcessing(databaseType = "H2", // This is optional
+        dataSourceRef = "dataSource",
         transactionManagerRef = "transactionManager",
         tablePrefix = "SPRING_BATCH.BATCH_",
         maxVarCharLength = 1000, // https://docs.spring.io/spring-batch/reference/job/configuring-repository.html
