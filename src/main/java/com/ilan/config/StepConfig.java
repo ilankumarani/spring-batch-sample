@@ -3,36 +3,27 @@ package com.ilan.config;
 import com.ilan.batch.listener.SampleJobExecutionListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 
-import javax.sql.DataSource;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
-import static com.ilan.constants.JobConstants.FILE_NAME;
-import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
-
 @Configuration
 @RequiredArgsConstructor
-public class StepBatchConfig {
+public class StepConfig {
 
     public static final int CHUNK_SIZE = 10;
     private final SampleJobExecutionListener sampleJobExecutionListener;
@@ -83,35 +74,7 @@ public class StepBatchConfig {
                 .build();
     }
 
-    @Bean
-    public TaskExecutor jobTaskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);  // Number of concurrent threads
-        executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(100);
-        executor.initialize();
-        return executor;
-    }
 
-    @Bean
-    CommandLineRunner startJob(DataSource dataSource, @Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob) {
-        return args -> {
-            System.out.println(dataSource);
-           /* for (int i = 0; i < 5; i++) {
-                jobTaskExecutor().execute(() -> {
-                    try {*/
-                        UUID uuid = UUID.randomUUID();
-                        JobParameters jobParameters = new JobParametersBuilder()
-                                .addString(FILE_NAME_PARAM, uuid + FILE_NAME)
-                                .toJobParameters();
-                        jobLauncher.run(asyncJob, jobParameters);
-                   /* } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }*/
-        };
-    }
 
 
 }
