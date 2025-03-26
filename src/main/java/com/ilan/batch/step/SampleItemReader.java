@@ -29,7 +29,6 @@ import static com.ilan.constants.JobConstants.UU_ID;
 public class SampleItemReader implements ItemReader<String>, StepExecutionListener {
 
 
-
     private Boolean firstExecution = Boolean.FALSE;
     private Boolean initialized = Boolean.TRUE;
 
@@ -64,11 +63,11 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
         return element;
     }
 
-    private void oneTimeLoadRead(){
+    private void oneTimeLoadRead() {
         log.debug("Reading the file once inside Read method of ItemReader");
     }
 
-    private List<String> initialized(String uuId){
+    private List<String> initialized(String uuId) {
         log.info("Reading the file once inside BeforeStep method {}", uuId);
         char[] UpperCaseAlphabet = uuId.toCharArray();
         return Arrays.stream(new String(UpperCaseAlphabet).split(""))

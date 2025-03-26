@@ -40,8 +40,8 @@ public class DefaultBatchConfig {
     public TaskExecutor jobTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);
-        executor.setMaxPoolSize(corePoolSize*2);
-        executor.setQueueCapacity(corePoolSize*3);
+        executor.setMaxPoolSize(corePoolSize * 2);
+        executor.setQueueCapacity(corePoolSize * 3);
 //        executor.initialize();
         return executor;
     }
