@@ -39,9 +39,9 @@ public class DefaultBatchConfig {
     @Bean(name = "customJobTaskExecutor")
     public TaskExecutor jobTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(corePoolSize);
-        executor.setMaxPoolSize(Integer.MAX_VALUE);
-//        executor.setQueueCapacity(10);
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(25);
 //        executor.initialize();
         return executor;
     }
