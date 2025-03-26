@@ -31,7 +31,7 @@ import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
 
 @Configuration
 @RequiredArgsConstructor
-public class BatchConfig {
+public class StepBatchConfig {
 
     public static final int CHUNK_SIZE = 10;
     private final SampleJobExecutionListener sampleJobExecutionListener;
