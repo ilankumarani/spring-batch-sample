@@ -42,19 +42,19 @@ public class SpringBatchExampleApplication {
 			//@Qualifier("customJobLauncher")
 			 JobLauncher jobLauncher, Job asyncJob) {
 		return args -> {
-            for (int i = 0; i < 10; i++) {
-                jobTaskExecutor().execute(() -> {
-                    try {
+            for (int i = 0; i < 20; i++) {
+//                jobTaskExecutor().execute(() -> {
+//                    try {
 			UUID uuid = UUID.randomUUID();
 			JobParameters jobParameters = new JobParametersBuilder()
 					.addString(UU_ID, uuid.toString())
 					.addString(FILE_NAME_PARAM, uuid + FILE_NAME)
 					.toJobParameters();
 			jobLauncher.run(asyncJob, jobParameters);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
             }
 		};
 	}
