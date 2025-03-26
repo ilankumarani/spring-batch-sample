@@ -8,8 +8,6 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
@@ -19,7 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -38,7 +35,6 @@ public class BatchConfig {
 
     public static final int CHUNK_SIZE = 10;
     private final SampleJobExecutionListener sampleJobExecutionListener;
-
 
     /*@StepScope
     @Bean
@@ -82,7 +78,6 @@ public class BatchConfig {
         UUID uuid = UUID.randomUUID();
         return new JobBuilder("asyncJob_" + uuid, jobRepository)
                 .listener(new SampleJobExecutionListener())
-                .incrementer(new RunIdIncrementer())
                 .start(asyncStep)
                 .build();
     }
@@ -104,14 +99,10 @@ public class BatchConfig {
                 jobTaskExecutor().execute(() -> {
                     try {*/
                         UUID uuid = UUID.randomUUID();
-                        Job job = new JobBuilder("asyncJob_" + uuid, jobRepository)
-                                .incrementer(new RunIdIncrementer())
-                                .start(asyncStep)
-                                .build();
                         JobParameters jobParameters = new JobParametersBuilder()
                                 .addString(FILE_NAME_PARAM, uuid + FILE_NAME)
                                 .toJobParameters();
-                        jobLauncher.run(job, jobParameters);
+                        jobLauncher.run(asyncJob, jobParameters);
                    /* } catch (Exception e) {
                         e.printStackTrace();
                     }
