@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static com.ilan.constants.JobConstants.FILE_NAME;
 import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
+import static com.ilan.constants.JobConstants.UU_ID;
 
 //https://spring.io/guides/gs/batch-processing
 @SpringBootApplication
@@ -37,14 +38,16 @@ public class SpringBatchExampleApplication {
 	}
 
 	@Bean
-	CommandLineRunner startJob(DataSource dataSource, @Qualifier("customJobLauncher") JobLauncher jobLauncher, Job asyncJob) {
+	CommandLineRunner startJob(
+			//@Qualifier("customJobLauncher")
+			 JobLauncher jobLauncher, Job asyncJob) {
 		return args -> {
-			System.out.println(dataSource);
            /* for (int i = 0; i < 5; i++) {
                 jobTaskExecutor().execute(() -> {
                     try {*/
 			UUID uuid = UUID.randomUUID();
 			JobParameters jobParameters = new JobParametersBuilder()
+					.addString(UU_ID, uuid.toString())
 					.addString(FILE_NAME_PARAM, uuid + FILE_NAME)
 					.toJobParameters();
 			jobLauncher.run(asyncJob, jobParameters);

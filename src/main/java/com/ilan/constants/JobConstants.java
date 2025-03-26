@@ -7,5 +7,6 @@ public final class JobConstants {
     }
 
     public static final String FILE_NAME_PARAM = "fileName";
+    public static final String UU_ID = "uuId";
     public static final String FILE_NAME = "test.csv";
 }

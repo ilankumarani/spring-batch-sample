@@ -67,8 +67,7 @@ public class StepConfig {
 
     @Bean
     public Job asyncJob(JobRepository jobRepository, Step asyncStep) {
-        UUID uuid = UUID.randomUUID();
-        return new JobBuilder("asyncJob_" + uuid, jobRepository)
+        return new JobBuilder("asyncJob", jobRepository)
                 .listener(new SampleJobExecutionListener())
                 .start(asyncStep)
                 .build();

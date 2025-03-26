@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
+import static com.ilan.constants.JobConstants.UU_ID;
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
 public class SampleItemReader implements ItemReader<String>, StepExecutionListener {
 
 
-    private String fileName;
+
     private Boolean firstExecution = Boolean.FALSE;
     private Boolean initialized = Boolean.TRUE;
 
@@ -40,10 +41,13 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
+        oneTimeLoadRead();
         JobParameters jobParameters = stepExecution.getJobParameters();
-        fileName = jobParameters.getString(FILE_NAME_PARAM);
-        log.info("File name from StepExecution {}", fileName);
-        items = initialized();
+        String fileName = jobParameters.getString(FILE_NAME_PARAM);
+        String uuId = jobParameters.getString(UU_ID);
+        log.debug("File name from StepExecution {}", fileName);
+        log.info("UUID from StepExecution {}", uuId);
+        items = initialized(uuId);
         this.iterator = items.iterator();
     }
 
@@ -55,16 +59,18 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
 
     @Override
     public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        return iterator.hasNext() ? iterator.next() : null;
+        String element = iterator.hasNext() ? iterator.next() : null;
+        log.debug("Element :: {}", element);
+        return element;
     }
 
     private void oneTimeLoadRead(){
-        log.info("Reading the file once inside Read method of ItemReader");
+        log.debug("Reading the file once inside Read method of ItemReader");
     }
 
-    private List<String> initialized(){
-        log.info("Reading the file once inside BeforeStep method");
-        char[] UpperCaseAlphabet = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+    private List<String> initialized(String uuId){
+        log.info("Reading the file once inside BeforeStep method {}", uuId);
+        char[] UpperCaseAlphabet = uuId.toCharArray();
         return Arrays.stream(new String(UpperCaseAlphabet).split(""))
                 .collect(Collectors.toList());
     }
