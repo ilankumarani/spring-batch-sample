@@ -32,7 +32,7 @@ public class SpringBatchExampleApplication {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(5);  // Number of concurrent threads
 		executor.setMaxPoolSize(10);
-		executor.setQueueCapacity(100);
+		executor.setQueueCapacity(25);
 		executor.initialize();
 		return executor;
 	}
@@ -42,20 +42,20 @@ public class SpringBatchExampleApplication {
 			//@Qualifier("customJobLauncher")
 			 JobLauncher jobLauncher, Job asyncJob) {
 		return args -> {
-           /* for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 jobTaskExecutor().execute(() -> {
-                    try {*/
+                    try {
 			UUID uuid = UUID.randomUUID();
 			JobParameters jobParameters = new JobParametersBuilder()
 					.addString(UU_ID, uuid.toString())
 					.addString(FILE_NAME_PARAM, uuid + FILE_NAME)
 					.toJobParameters();
 			jobLauncher.run(asyncJob, jobParameters);
-                   /* } catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-            }*/
+            }
 		};
 	}
 }
