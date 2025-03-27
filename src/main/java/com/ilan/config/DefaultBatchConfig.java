@@ -15,12 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-
+@Profile("annotation")
 @EnableBatchProcessing(databaseType = "H2", // This is optional
         dataSourceRef = "dataSource",
         transactionManagerRef = "transactionManager",
@@ -42,13 +43,8 @@ public class DefaultBatchConfig {
         executor.setCorePoolSize(corePoolSize);
         executor.setMaxPoolSize(corePoolSize * 2);
         executor.setQueueCapacity(corePoolSize * 3);
-//        executor.initialize();
+        executor.initialize();
         return executor;
-    }
-
-    @Bean(name = "stepTaskExecutor")
-    public TaskExecutor stepTaskExecutor() {
-        return new SimpleAsyncTaskExecutor("step-taskExecutor");
     }
 
 

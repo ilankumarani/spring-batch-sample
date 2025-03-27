@@ -13,17 +13,22 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 
-import java.util.UUID;
 import java.util.concurrent.Future;
 
 @Configuration
 @RequiredArgsConstructor
 public class StepConfig {
+
+    @Bean(name = "stepTaskExecutor")
+    public TaskExecutor stepTaskExecutor() {
+        return new SimpleAsyncTaskExecutor("step-taskExecutor");
+    }
 
     public static final int CHUNK_SIZE = 10;
     private final SampleJobExecutionListener sampleJobExecutionListener;
