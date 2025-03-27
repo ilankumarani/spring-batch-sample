@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Isolation;
@@ -69,22 +68,7 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
     @Bean
     @Override
     public JobRepository jobRepository() throws BatchConfigurationException {
-        CustomJobRepositoryFactoryBean jobRepositoryFactoryBean = null;
-        try {
-            jobRepositoryFactoryBean = new CustomJobRepositoryFactoryBean(this.getJdbcOperations()
-                    , this.getDatabaseType()
-                    ,this.getTablePrefix()
-            , this.getIncrementerFactory()
-            ,this.getJobKeyGenerator()
-            , this.getMaxVarCharLength()
-            , this.getMaxVarCharLength()
-            , null
-            , this.getExecutionContextSerializer()
-            , this.getClobType()
-            , this.getConversionService());
-        } catch (MetaDataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        CustomJobRepositoryFactoryBean jobRepositoryFactoryBean = getCustomJobRepositoryFactoryBean();
 
         try {
             jobRepositoryFactoryBean.setDataSource(this.getDataSource());
@@ -104,9 +88,28 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
             jobRepositoryFactoryBean.setValidateTransactionState(this.getValidateTransactionState());
             jobRepositoryFactoryBean.afterPropertiesSet();
             return jobRepositoryFactoryBean.getObject();
-        } catch (Exception var3) {
-            Exception e = var3;
-            throw new BatchConfigurationException("Unable to configure the default job repository", e);
+        } catch (Exception e) {
+            throw new BatchConfigurationException("Hey Ilan Unable to configure the default job repository", e);
         }
+    }
+
+    private CustomJobRepositoryFactoryBean getCustomJobRepositoryFactoryBean() {
+        CustomJobRepositoryFactoryBean jobRepositoryFactoryBean = null;
+        try {
+            jobRepositoryFactoryBean = new CustomJobRepositoryFactoryBean(this.getJdbcOperations()
+                    , this.getDatabaseType()
+                    ,this.getTablePrefix()
+            , this.getIncrementerFactory()
+            ,this.getJobKeyGenerator()
+            , this.getMaxVarCharLength()
+            , this.getMaxVarCharLength()
+            , null
+            , this.getExecutionContextSerializer()
+            , this.getClobType()
+            , this.getConversionService());
+        } catch (Exception e) {
+            throw new RuntimeException("Hey Ilan Unable to set the default Value to CustomJobRepositoryFactoryBean ", e);
+        }
+        return jobRepositoryFactoryBean;
     }
 }
