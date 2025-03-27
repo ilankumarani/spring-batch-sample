@@ -1,16 +1,16 @@
 package com.ilan.config;
 
+import com.ilan.custom.CustomJobRepositoryFactoryBean;
 import org.springframework.batch.core.configuration.BatchConfigurationException;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Isolation;
@@ -66,10 +66,25 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
         return executor;
     }
 
-    /*@Bean
+    @Bean
     @Override
     public JobRepository jobRepository() throws BatchConfigurationException {
-        JobRepositoryFactoryBean jobRepositoryFactoryBean = new JobRepositoryFactoryBean();
+        CustomJobRepositoryFactoryBean jobRepositoryFactoryBean = null;
+        try {
+            jobRepositoryFactoryBean = new CustomJobRepositoryFactoryBean(this.getJdbcOperations()
+                    , this.getDatabaseType()
+                    ,this.getTablePrefix()
+            , this.getIncrementerFactory()
+            ,this.getJobKeyGenerator()
+            , this.getMaxVarCharLength()
+            , this.getMaxVarCharLength()
+            , null
+            , this.getExecutionContextSerializer()
+            , this.getClobType()
+            , this.getConversionService());
+        } catch (MetaDataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             jobRepositoryFactoryBean.setDataSource(this.getDataSource());
@@ -93,5 +108,5 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
             Exception e = var3;
             throw new BatchConfigurationException("Unable to configure the default job repository", e);
         }
-    }*/
+    }
 }
