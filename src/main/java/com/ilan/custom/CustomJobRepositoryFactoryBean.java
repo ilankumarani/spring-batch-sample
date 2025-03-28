@@ -1,5 +1,6 @@
 package com.ilan.custom;
 
+import com.ilan.constants.JdbcJobExecutionDaoCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.JobKeyGenerator;
 import org.springframework.batch.core.repository.ExecutionContextSerializer;
@@ -66,7 +67,7 @@ public class CustomJobRepositoryFactoryBean extends JobRepositoryFactoryBean {
 
     @Override
     protected JobExecutionDao createJobExecutionDao() throws Exception {
-        JdbcJobExecutionDao dao = new JdbcJobExecutionDao();
+        JdbcJobExecutionDaoCustom dao = new JdbcJobExecutionDaoCustom();
         dao.setJdbcTemplate(jdbcOperations);
         dao.setJobExecutionIncrementer(
                 incrementerFactory.getIncrementer(databaseType, tablePrefix + "JOB_EXECUTION_SEQ"));
