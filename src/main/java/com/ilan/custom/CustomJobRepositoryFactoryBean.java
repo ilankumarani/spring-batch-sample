@@ -90,7 +90,7 @@ public class CustomJobRepositoryFactoryBean extends JobRepositoryFactoryBean {
 
     @Override
     protected ExecutionContextDao createExecutionContextDao() throws Exception {
-        JdbcExecutionContextDao dao = new JdbcExecutionContextDao();
+        JdbcExecutionContextDaoCustom dao = new JdbcExecutionContextDaoCustom();
         dao.setJdbcTemplate(jdbcOperations);
         dao.setTablePrefix(tablePrefix);
         dao.setClobTypeToUse(determineClobTypeToUse(this.databaseType));
