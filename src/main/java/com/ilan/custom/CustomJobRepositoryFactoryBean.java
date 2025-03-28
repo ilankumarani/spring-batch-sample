@@ -77,7 +77,7 @@ public class CustomJobRepositoryFactoryBean extends JobRepositoryFactoryBean {
 
     @Override
     protected StepExecutionDao createStepExecutionDao() throws Exception {
-        JdbcStepExecutionDao dao = new JdbcStepExecutionDao();
+        JdbcStepExecutionDaoCustom dao = new JdbcStepExecutionDaoCustom();
         dao.setJdbcTemplate(jdbcOperations);
         dao.setStepExecutionIncrementer(
                 incrementerFactory.getIncrementer(databaseType, tablePrefix + "STEP_EXECUTION_SEQ"));
