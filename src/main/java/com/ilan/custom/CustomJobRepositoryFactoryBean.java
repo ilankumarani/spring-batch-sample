@@ -1,13 +1,10 @@
 package com.ilan.custom;
 
-import com.ilan.constants.JdbcJobExecutionDaoCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.JobKeyGenerator;
 import org.springframework.batch.core.repository.ExecutionContextSerializer;
-import org.springframework.batch.core.repository.dao.AbstractJdbcBatchMetadataDao;
 import org.springframework.batch.core.repository.dao.ExecutionContextDao;
 import org.springframework.batch.core.repository.dao.JdbcExecutionContextDao;
-import org.springframework.batch.core.repository.dao.JdbcJobExecutionDao;
 import org.springframework.batch.core.repository.dao.JdbcJobInstanceDao;
 import org.springframework.batch.core.repository.dao.JdbcStepExecutionDao;
 import org.springframework.batch.core.repository.dao.JobExecutionDao;
@@ -20,7 +17,6 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.support.lob.LobHandler;
 
-import javax.sql.DataSource;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Types;

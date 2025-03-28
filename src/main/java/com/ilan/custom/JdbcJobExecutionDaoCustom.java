@@ -1,4 +1,4 @@
-package com.ilan.constants;
+package com.ilan.custom;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.repository.dao.JdbcJobExecutionDao;
