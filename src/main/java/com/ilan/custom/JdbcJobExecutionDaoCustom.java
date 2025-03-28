@@ -9,4 +9,9 @@ public class JdbcJobExecutionDaoCustom extends JdbcJobExecutionDao {
     public void updateJobExecution(JobExecution jobExecution) {
 
     }
+
+    @Override
+    public void synchronizeStatus(JobExecution jobExecution) {
+
+    }
 }
