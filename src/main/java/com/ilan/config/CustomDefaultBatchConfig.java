@@ -65,6 +65,11 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
         return executor;
     }
 
+    /**
+     * This method overrides <b> JobRepository Bean </b> in super class
+     * @return
+     * @throws BatchConfigurationException
+     */
     @Bean
     @Override
     public JobRepository jobRepository() throws BatchConfigurationException {
