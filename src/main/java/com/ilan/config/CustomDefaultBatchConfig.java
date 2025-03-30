@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 
 @Profile("javaBased")
 @Configuration
-//BatchRegistrar //Annotation Register
+//BatchRegistrar //@EnableBatchProcessing Annotation Register
 //DefaultBatchConfiguration
 public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
 
