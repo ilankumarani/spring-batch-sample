@@ -1,12 +1,12 @@
-logging:
-    level:
-        org:
-            # Logging SQL Statements with JdbcTemplate
-            springframework:
-                jdbc:
-                    core:
-                        JdbcTemplate: DEBUG
-                        StatementCreatorUtils: TRACE
+#logging:
+#    level:
+#        org:
+#            # Logging SQL Statements with JdbcTemplate
+#            springframework:
+#                jdbc:
+#                    core:
+#                        JdbcTemplate: DEBUG
+#                        StatementCreatorUtils: TRACE
 
 spring:
     jpa:
