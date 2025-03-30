@@ -30,7 +30,7 @@ import org.springframework.transaction.PlatformTransactionManager;
         isolationLevelForCreate = "ISOLATION_READ_COMMITTED",
         taskExecutorRef = "customJobTaskExecutor")
 @Configuration
-//BatchRegistrar //Annotation Register
+//BatchRegistrar //@EnableBatchProcessing Annotation Register
 //DefaultBatchConfiguration
 public class DefaultBatchConfig {
 
