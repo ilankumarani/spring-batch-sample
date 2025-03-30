@@ -38,7 +38,7 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
     }
 
     @Override
-    public PlatformTransactionManager getTransactionManager(){
+    public PlatformTransactionManager getTransactionManager() {
         return transactionManager;
     }
 
@@ -98,15 +98,15 @@ public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
         try {
             jobRepositoryFactoryBean = new CustomJobRepositoryFactoryBean(this.getJdbcOperations()
                     , this.getDatabaseType()
-                    ,this.getTablePrefix()
-            , this.getIncrementerFactory()
-            ,this.getJobKeyGenerator()
-            , this.getMaxVarCharLength()
-            , this.getMaxVarCharLength()
-            , null
-            , this.getExecutionContextSerializer()
-            , this.getClobType()
-            , this.getConversionService());
+                    , this.getTablePrefix()
+                    , this.getIncrementerFactory()
+                    , this.getJobKeyGenerator()
+                    , this.getMaxVarCharLength()
+                    , this.getMaxVarCharLength()
+                    , null
+                    , this.getExecutionContextSerializer()
+                    , this.getClobType()
+                    , this.getConversionService());
         } catch (Exception e) {
             throw new RuntimeException("Hey Ilan Unable to set the default Value to CustomJobRepositoryFactoryBean ", e);
         }
