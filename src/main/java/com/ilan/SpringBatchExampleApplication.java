@@ -42,7 +42,7 @@ public class SpringBatchExampleApplication {
 			//@Qualifier("customJobLauncher")
 			 JobLauncher jobLauncher, Job asyncJob) {
 		return args -> {
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 1; i++) {
 //                jobTaskExecutor().execute(() -> {
 //                    try {
 			UUID uuid = UUID.randomUUID();
