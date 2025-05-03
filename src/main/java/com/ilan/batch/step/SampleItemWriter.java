@@ -28,6 +28,7 @@ public class SampleItemWriter implements ItemWriter<String> {
 
     @Override
     public void write(Chunk<? extends String> chunk) throws Exception {
+        log.info("ItemWriter in stepExecution ", stepExecution.toString());
         log.debug("File name parameter received {}", fileName);
         List<String> chunkItems = (List<String>) chunk.getItems();
         log.info("Chunk items :: {}", chunkItems);

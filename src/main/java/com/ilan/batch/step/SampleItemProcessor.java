@@ -3,6 +3,7 @@ package com.ilan.batch.step;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -22,7 +23,7 @@ public class SampleItemProcessor implements ItemProcessor<String, String> {
 
     @Override
     public String process(String item) throws Exception {
-        System.out.println(stepExecution);
+        log.info("ItemProcessor in stepExecution ", stepExecution.toString());
         return item;
     }
 }
