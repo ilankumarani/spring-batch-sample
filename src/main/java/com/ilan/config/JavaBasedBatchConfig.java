@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 @Configuration
 //BatchRegistrar //@EnableBatchProcessing Annotation Register
 //DefaultBatchConfiguration
-public class CustomDefaultBatchConfig extends DefaultBatchConfiguration {
+public class JavaBasedBatchConfig extends DefaultBatchConfiguration {
 
     @Autowired
     private DataSource dataSource;
