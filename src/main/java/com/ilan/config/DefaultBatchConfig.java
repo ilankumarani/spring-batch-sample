@@ -1,25 +1,12 @@
 package com.ilan.config;
 
-import lombok.SneakyThrows;
-import org.springframework.batch.core.configuration.BatchConfigurationException;
-import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.batch.core.launch.support.SimpleJobOperator;
-import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Profile("annotationBased")
 @EnableBatchProcessing(databaseType = "H2", // This is optional
@@ -47,27 +34,4 @@ public class DefaultBatchConfig {
         return executor;
     }
 
-
-    /*@Bean(name = "customJobLauncher")
-    @SneakyThrows
-    public JobLauncher jobLauncher(JobRepository jobRepository, @Qualifier("customJobTaskExecutor") TaskExecutor jobTaskExecutor) throws BatchConfigurationException {
-        TaskExecutorJobLauncher taskExecutorJobLauncher = new TaskExecutorJobLauncher();
-        taskExecutorJobLauncher.setJobRepository(jobRepository);
-        taskExecutorJobLauncher.setTaskExecutor(jobTaskExecutor);
-        taskExecutorJobLauncher.afterPropertiesSet();
-        return taskExecutorJobLauncher;
-    }
-
-    @Primary
-    @Bean
-    @SneakyThrows
-    public JobOperator jobOperator(JobRepository jobRepository, JobExplorer jobExplorer, JobRegistry jobRegistry, @Qualifier("customJobLauncher") JobLauncher jobLauncher, PlatformTransactionManager transactionManager) throws BatchConfigurationException {
-        SimpleJobOperator simpleJobOperator = new SimpleJobOperator();
-        simpleJobOperator.setJobRepository(jobRepository);
-        simpleJobOperator.setJobExplorer(jobExplorer);
-        simpleJobOperator.setJobRegistry(jobRegistry);
-        simpleJobOperator.setJobLauncher(jobLauncher);
-        simpleJobOperator.afterPropertiesSet();
-        return simpleJobOperator;
-    }*/
 }
