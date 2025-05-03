@@ -3,6 +3,7 @@ package com.ilan.batch.step;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -21,6 +22,9 @@ public class SampleItemWriter implements ItemWriter<String> {
 
     @Value("#{jobParameters['fileName']}")
     private String fileName;
+
+    @Value("#{stepExecution}")
+    private StepExecution stepExecution;
 
     @Override
     public void write(Chunk<? extends String> chunk) throws Exception {

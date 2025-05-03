@@ -2,6 +2,7 @@ package com.ilan.config;
 
 import com.ilan.batch.listener.SampleJobExecutionListener;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -38,18 +39,22 @@ public class BaseJobConfig {
         return new SampleItemProcessor();
     }*/
 
+    @SneakyThrows
     @Bean
     public AsyncItemProcessor<String, String> asyncProcessor(ItemProcessor<String, String> sampleItemProcessor, @Qualifier("stepTaskExecutor") TaskExecutor stepTaskExecutor) {
         AsyncItemProcessor<String, String> asyncItemProcessor = new AsyncItemProcessor<>();
         asyncItemProcessor.setDelegate(sampleItemProcessor);
         asyncItemProcessor.setTaskExecutor(stepTaskExecutor);
+        asyncItemProcessor.afterPropertiesSet();
         return asyncItemProcessor;
     }
 
+    @SneakyThrows
     @Bean
     public AsyncItemWriter<String> asyncWriter(ItemWriter<String> sampleItemWriter) {
         AsyncItemWriter<String> asyncItemWriter = new AsyncItemWriter<>();
         asyncItemWriter.setDelegate(sampleItemWriter);
+        asyncItemWriter.afterPropertiesSet();
         return asyncItemWriter;
     }
 
