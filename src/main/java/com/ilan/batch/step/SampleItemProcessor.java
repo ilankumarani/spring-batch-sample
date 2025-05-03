@@ -28,7 +28,7 @@ public class SampleItemProcessor implements ItemProcessor<String, String> {
 
     @Override
     public String process(String item) throws Exception {
-        log.info("ItemProcessor in stepExecution :: {}", stepExecution.getJobExecution().getJobParameters().toString());
+        log.debug("ItemProcessor in stepExecution :: {}", stepExecution.getJobExecution().getJobParameters().toString());
         stepExecution.getExecutionContext().put(STEP_EXECUTION_CONTEXT_PARAM, STEP_EXECUTION_CONTEXT_VALUE);
         stepExecution.getJobExecution().getExecutionContext().put(JOB_EXECUTION_CONTEXT_PARAM, JOB_EXECUTION_CONTEXT_VALUE);
         return item;

@@ -33,9 +33,9 @@ public class SampleItemWriter implements ItemWriter<String> {
 
     @Override
     public void write(Chunk<? extends String> chunk) throws Exception {
-        log.info("ItemWriter in stepExecution :: {}", stepExecution.toString());
-        log.info("JOB ExecutionContext() :: {}",stepExecution.getJobExecution().getExecutionContext().get(JOB_EXECUTION_CONTEXT_PARAM));
-        log.info("STEP ExecutionContext() :: {}",stepExecution.getExecutionContext().get(STEP_EXECUTION_CONTEXT_PARAM));
+        log.debug("ItemWriter in stepExecution :: {}", stepExecution.toString());
+        log.debug("JOB ExecutionContext() :: {}",stepExecution.getJobExecution().getExecutionContext().get(JOB_EXECUTION_CONTEXT_PARAM));
+        log.debug("STEP ExecutionContext() :: {}",stepExecution.getExecutionContext().get(STEP_EXECUTION_CONTEXT_PARAM));
         log.debug("File name parameter received {}", fileName);
         List<String> chunkItems = (List<String>) chunk.getItems();
         log.info("Chunk items :: {}", chunkItems);
