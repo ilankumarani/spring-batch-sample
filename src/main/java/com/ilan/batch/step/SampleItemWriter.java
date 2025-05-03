@@ -1,5 +1,6 @@
 package com.ilan.batch.step;
 
+import com.ilan.exception.IlanBatchException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +34,14 @@ public class SampleItemWriter implements ItemWriter<String> {
 
     @Override
     public void write(Chunk<? extends String> chunk) throws Exception {
-        log.debug("ItemWriter in stepExecution :: {}", stepExecution.toString());
         log.debug("JOB ExecutionContext() :: {}",stepExecution.getJobExecution().getExecutionContext().get(JOB_EXECUTION_CONTEXT_PARAM));
         log.debug("STEP ExecutionContext() :: {}",stepExecution.getExecutionContext().get(STEP_EXECUTION_CONTEXT_PARAM));
         log.debug("File name parameter received {}", fileName);
         List<String> chunkItems = (List<String>) chunk.getItems();
         log.info("Chunk items :: {}", chunkItems);
+        if(chunkItems.contains("Z")){
+            log.info("If chunk fails for some reason, then we re-try according to retry limit");
+            throw new IlanBatchException("Manual Throw");
+        }
     }
 }

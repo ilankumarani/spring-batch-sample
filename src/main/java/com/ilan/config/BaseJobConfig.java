@@ -1,6 +1,7 @@
 package com.ilan.config;
 
 import com.ilan.batch.listener.SampleJobExecutionListener;
+import com.ilan.exception.IlanBatchException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.batch.core.Job;
@@ -14,6 +15,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -29,7 +31,11 @@ import static com.ilan.constants.JobConstants.ASYNC_STEP;
 @Configuration
 public class BaseJobConfig {
 
-    public static final int CHUNK_SIZE = 10;
+    @Value("${batch.chunkSize:10}")
+    public Integer chunkSize;
+
+    @Value("${batch.chunkRetry:3}")
+    public Integer chunkRetry;
 
     @Bean(name = "stepTaskExecutor")
     public TaskExecutor stepTaskExecutor() {
@@ -69,11 +75,15 @@ public class BaseJobConfig {
                           AsyncItemWriter<String> asyncWriter,
                           @Qualifier("stepTaskExecutor") TaskExecutor stepTaskExecutor) {
         return new StepBuilder(ASYNC_STEP, jobRepository)
-                .<String, Future<String>>chunk(CHUNK_SIZE, transactionManager)
+                .<String, Future<String>>chunk(chunkSize, transactionManager)
                 .reader(sampleItemReader)
                 .processor(asyncProcessor)
                 .writer(asyncWriter)
                 .taskExecutor(stepTaskExecutor)  // Enable multi-threading
+                .faultTolerant()
+                .retry(IlanBatchException.class)
+                .retryLimit(chunkRetry)
+                //.startLimit(1)
                 .build();
     }
 

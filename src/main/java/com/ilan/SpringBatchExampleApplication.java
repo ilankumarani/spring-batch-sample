@@ -48,7 +48,7 @@ public class SpringBatchExampleApplication {
 			UUID uuid = UUID.randomUUID();
 			JobParameters jobParameters = new JobParametersBuilder()
 					.addString(UU_ID, uuid.toString())
-					.addString(FILE_NAME_PARAM, uuid + FILE_NAME)
+					.addString(FILE_NAME_PARAM, FILE_NAME)
 					.toJobParameters();
 			jobLauncher.run(asyncJob, jobParameters);
 //                    } catch (Exception e) {
