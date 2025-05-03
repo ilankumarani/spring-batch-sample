@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 
 @Configuration
 @RequiredArgsConstructor
-public class StepConfig {
+public class JobConfig extends BaseBatchConfig {
 
     @Bean(name = "stepTaskExecutor")
     public TaskExecutor stepTaskExecutor() {

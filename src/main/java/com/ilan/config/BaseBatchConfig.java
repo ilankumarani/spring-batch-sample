@@ -19,7 +19,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 //BatchRegistrar //@EnableBatchProcessing Annotation Register
 //DefaultBatchConfiguration
-public class DefaultBatchConfig {
+public class BaseBatchConfig {
 
     @Value("${demo.parallelism:#{T(java.lang.Runtime).getRuntime().availableProcessors()}}")
     private Integer corePoolSize;
