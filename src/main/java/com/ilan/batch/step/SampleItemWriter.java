@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.ilan.constants.JobConstants.JOB_EXECUTION_CONTEXT_PARAM;
+import static com.ilan.constants.JobConstants.JOB_EXECUTION_CONTEXT_VALUE;
+import static com.ilan.constants.JobConstants.STEP_EXECUTION_CONTEXT_PARAM;
+import static com.ilan.constants.JobConstants.STEP_EXECUTION_CONTEXT_VALUE;
+
 @Component
 @StepScope
 @RequiredArgsConstructor
@@ -28,7 +33,9 @@ public class SampleItemWriter implements ItemWriter<String> {
 
     @Override
     public void write(Chunk<? extends String> chunk) throws Exception {
-        log.info("ItemWriter in stepExecution ", stepExecution.toString());
+        log.info("ItemWriter in stepExecution :: {}", stepExecution.toString());
+        log.info("JOB ExecutionContext() :: {}",stepExecution.getJobExecution().getExecutionContext().get(JOB_EXECUTION_CONTEXT_PARAM));
+        log.info("STEP ExecutionContext() :: {}",stepExecution.getExecutionContext().get(STEP_EXECUTION_CONTEXT_PARAM));
         log.debug("File name parameter received {}", fileName);
         List<String> chunkItems = (List<String>) chunk.getItems();
         log.info("Chunk items :: {}", chunkItems);

@@ -22,6 +22,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.concurrent.Future;
 
+import static com.ilan.constants.JobConstants.ASYNC_JOB;
+import static com.ilan.constants.JobConstants.ASYNC_STEP;
+
 @RequiredArgsConstructor
 @Configuration
 public class BaseJobConfig {
@@ -65,7 +68,7 @@ public class BaseJobConfig {
                           AsyncItemProcessor<String, String> asyncProcessor,
                           AsyncItemWriter<String> asyncWriter,
                           @Qualifier("stepTaskExecutor") TaskExecutor stepTaskExecutor) {
-        return new StepBuilder("asyncStep", jobRepository)
+        return new StepBuilder(ASYNC_STEP, jobRepository)
                 .<String, Future<String>>chunk(CHUNK_SIZE, transactionManager)
                 .reader(sampleItemReader)
                 .processor(asyncProcessor)
@@ -76,7 +79,7 @@ public class BaseJobConfig {
 
     @Bean
     public Job asyncJob(JobRepository jobRepository, Step asyncStep, SampleJobExecutionListener sampleJobExecutionListener) {
-        return new JobBuilder("asyncJob", jobRepository)
+        return new JobBuilder(ASYNC_JOB, jobRepository)
                 .listener(sampleJobExecutionListener)
                 .start(asyncStep)
                 .build();
