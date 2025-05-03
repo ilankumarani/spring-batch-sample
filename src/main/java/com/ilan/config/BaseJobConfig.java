@@ -2,6 +2,7 @@ package com.ilan.config;
 
 import com.ilan.batch.listener.SampleJobExecutionListener;
 import com.ilan.exception.IlanBatchException;
+import com.ilan.exception.IlanRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.batch.core.Job;
@@ -31,11 +32,14 @@ import static com.ilan.constants.JobConstants.ASYNC_STEP;
 @Configuration
 public class BaseJobConfig {
 
-    @Value("${batch.chunkSize:10}")
+    @Value("${batch.chunkSize:5}")
     public Integer chunkSize;
 
     @Value("${batch.chunkRetry:3}")
     public Integer chunkRetry;
+
+    @Value("${batch.skipLimit:20}")
+    public Integer skipLimit;
 
     @Bean(name = "stepTaskExecutor")
     public TaskExecutor stepTaskExecutor() {
@@ -81,9 +85,10 @@ public class BaseJobConfig {
                 .writer(asyncWriter)
                 .taskExecutor(stepTaskExecutor)  // Enable multi-threading
                 .faultTolerant()
-                .retry(IlanBatchException.class)
-                .retryLimit(chunkRetry)
-                //.startLimit(1)
+                .retry(IlanBatchException.class) // re-try the logic in ItemWriter on Exception
+                .retryLimit(chunkRetry) // re-try for number of times
+                /*.skip(IlanRuntimeException.class)
+                .skipLimit(skipLimit)*/
                 .build();
     }
 
