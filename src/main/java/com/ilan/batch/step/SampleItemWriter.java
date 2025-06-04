@@ -42,7 +42,6 @@ public class SampleItemWriter implements ItemWriter<String> {
 
         if (stepExecution.getJobExecution().getExecutionContext().containsKey(ROW_COUNT)) {
             Integer rowCount = stepExecution.getJobExecution().getExecutionContext().getInt(ROW_COUNT);
-
             stepExecution.getJobExecution().getExecutionContext().putInt(ROW_COUNT, rowCount + chunkItems.size());
         } else {
             stepExecution.getJobExecution().getExecutionContext().putInt(ROW_COUNT, 0);
