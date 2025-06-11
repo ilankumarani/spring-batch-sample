@@ -5,6 +5,8 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static com.ilan.constants.JobConstants.ROW_COUNT;
 
 @Component
@@ -19,7 +21,7 @@ public class SampleJobExecutionListener implements JobExecutionListener {
     @Override
     public void afterJob(JobExecution jobExecution) {
         log.info("Job Completed with Status :: {}" , jobExecution.getStatus());
-        log.info("Row Count :: {}", jobExecution.getExecutionContext().getInt(ROW_COUNT));
+        log.info("Row Count :: {}", ((AtomicInteger)jobExecution.getExecutionContext().get(ROW_COUNT)).get());
     }
 }
 

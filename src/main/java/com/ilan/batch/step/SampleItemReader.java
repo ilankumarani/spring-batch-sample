@@ -13,9 +13,11 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.ilan.constants.JobConstants.FILE_NAME_PARAM;
+import static com.ilan.constants.JobConstants.ROW_COUNT;
 import static com.ilan.constants.JobConstants.UU_ID;
 import static com.ilan.constants.JobConstants.UpperCaseAlphabet;
 
@@ -32,11 +34,14 @@ public class SampleItemReader implements ItemReader<String>, StepExecutionListen
     private List<String> items;
     private Iterator<String> iterator;
 
+    AtomicInteger count = new AtomicInteger(0);
+
     /**
      * called only once before the Step
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
+        stepExecution.getJobExecution().getExecutionContext().put(ROW_COUNT, count);
         JobParameters jobParameters = stepExecution.getJobParameters();
         String fileName = jobParameters.getString(FILE_NAME_PARAM);
         String uuId = jobParameters.getString(UU_ID);
